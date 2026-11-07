@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .ipl-bar {
+      position: absolute;
+      bottom: 25px;
+      left: 5%;
+      width: 90%;
+      height: 55px;
+      background: linear-gradient(135deg, #0b132b 0%, #1c2541 100%);
+      display: flex;
+      align-items: center;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+      border-bottom: 4px solid #f39c12;
+      color: #fff;
+    }
+    .team-box {
+      background: #f39c12;
+      color: #000;
+      font-weight: 900;
+      font-size: 20px;
+      padding: 0 16px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+    }
+    .score-box {
+      padding: 0 18px;
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .overs-box {
+      font-size: 15px;
+      color: #cbd5e1;
+      margin-left: 5px;
+    }
+    .batsmen-section {
+      display: flex;
+      gap: 15px;
+      border-left: 2px solid rgba(255,255,255,0.15);
+      padding: 0 15px;
+      font-size: 14px;
+    }
+    .active-batsman {
+      color: #facc15;
+      font-weight: bold;
+    }
+    .bowler-section {
+      margin-left: auto;
+      border-left: 2px solid rgba(255,255,255,0.15);
+      padding: 0 18px;
+      font-size: 14px;
+      color: #38bdf8;
+      font-weight: bold;
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+  <div class="ipl-bar">
+    <div class="team-box" id="battingTeam">TEAM 1</div>
+    <div class="score-box">
+      <span id="score">0/0</span>
+      <span class="overs-box" id="overs">(0.0)</span>
+    </div>
+    <div class="batsmen-section">
+      <div id="bat1" class="active-batsman">बल्लेबाज़ 1* : 0(0)</div>
+      <div id="bat2">बल्लेबाज़ 2 : 0(0)</div>
+    </div>
+    <div class="bowler-section" id="bowler">
+      गेंदबाज़: 0-0 (0.0)
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      databaseURL: "https://swatantrata-senani-cup-2026-default-rtdb.firebaseio.com/"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    db.ref("LIVE MATCH/live_match").on("value", (snapshot) => {
+      const data = snapshot.val();
+      if(data) {
+        document.getElementById("battingTeam").innerText = data.teamA || "BAT";
+        document.getElementById("score").innerText = `${data.runs || 0}/${data.wickets || 0}`;
+        document.getElementById("overs").innerText = `(${data.overs || '0.0'})`;
+        document.getElementById("bat1").innerText = `${data.striker || 'बल्लेबाज़ 1'}*`;
+        document.getElementById("bat2").innerText = `${data.nonStriker || 'बल्लेबाज़ 2'}`;
+        document.getElementById("bowler").innerText = `${data.bowler || 'गेंदबाज़'}`;
+      }
+    });
+  </script>
+</body>
+</html>
